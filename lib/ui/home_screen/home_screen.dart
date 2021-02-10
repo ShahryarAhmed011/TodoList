@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/Constants.dart';
 import 'package:todo_list/ui/home_screen/search_field.dart';
 
-import 'file:///E:/S.A/Test/todo_list/lib/ui/home_screen/digital_clock.dart';
-import 'file:///E:/S.A/Test/todo_list/lib/ui/home_screen/task_list.dart';
+import 'digital_clock.dart';
+import 'task_list.dart';
 
 const String HOME_SCREEN = 'Home_Screen';
 typedef SearchTextCallback = Function(TextEditingController); //forCallback

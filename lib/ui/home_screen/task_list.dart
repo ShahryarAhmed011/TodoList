@@ -5,9 +5,9 @@ import 'package:todo_list/Constants.dart';
 import 'package:todo_list/databasehelper/database_helper.dart';
 import 'package:todo_list/models/task.dart';
 
-import 'file:///E:/S.A/Test/todo_list/lib/ui/add_task_screen/add_task_screen.dart';
-import 'file:///E:/S.A/Test/todo_list/lib/ui/add_task_screen/custom_dialog.dart';
-import 'file:///E:/S.A/Test/todo_list/lib/ui/home_screen/card_check_box.dart';
+import '../add_task_screen/add_task_screen.dart';
+import '../add_task_screen/custom_dialog.dart';
+import 'card_check_box.dart';
 
 class TaskList extends StatefulWidget {
   final TextEditingController searchController;
@@ -21,6 +21,9 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
   TextEditingController searchController;
   Future<List<Task>> taskItems;
+  Future<List<Task>> tempTaskItems;
+  Future<List<Task>> searchTaskItems;
+
   DateTime taskDate;
   String dropDownValue;
   String dropHintValue;
@@ -54,6 +57,8 @@ class _TaskListState extends State<TaskList> {
     taskDate = DateTime.now();
     searchController.addListener(_printLatestValue);
     taskItems = getTaskList();
+    tempTaskItems = taskItems;
+    searchTaskItems = taskItems;
     initializeDateFormatting();
 
     super.initState();
@@ -62,13 +67,26 @@ class _TaskListState extends State<TaskList> {
   _printLatestValue() async {
     if (searchController.text == '') {
       setState(() {
-        taskItems = getTaskList();
+        taskItems = tempTaskItems; //getTaskList();
       });
     } else {
       setState(() {
-        taskItems = dbHelper.getSearchTask(searchController.text);
+        //taskItems = dbHelper.getSearchTask(searchController.text);
+        taskItems = processTaskItems(tempTaskItems, searchController.text);
       });
     }
+  }
+
+  Future<List<Task>> processTaskItems(
+      Future<List<Task>> taskItems, String searchText) async {
+    List<Task> tempTask;
+    for (Task task in await taskItems) {
+      if (task.title.contains(searchText)) {
+        tempTask.add(task);
+        print('Task Process-->---${task.date}');
+      }
+    }
+    return tempTask as Future<List<Task>>;
   }
 
   void search(String s) {
