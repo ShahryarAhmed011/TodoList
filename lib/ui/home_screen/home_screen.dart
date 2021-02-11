@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/Constants.dart';
+import 'package:todo_list/models/stream_helper.dart';
 import 'package:todo_list/ui/home_screen/search_field.dart';
 
 import 'digital_clock.dart';
@@ -37,14 +38,16 @@ class HomeScreen extends StatelessWidget {
         ),
         body: Home(),
         backgroundColor: Constants.THEME_COLOR,
-        /*floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add,
           ),
           elevation: 10,
           backgroundColor: Constants.THEME_COLOR,
-          onPressed: (){DBHelper().submit();},
-        ),*/
+          onPressed: () {
+            StreamHelper().controller.add(1);
+          },
+        ),
       ),
     );
   }
@@ -105,7 +108,7 @@ class Home extends StatelessWidget {
             topLeft: const Radius.circular(60.0),
             topRight: const Radius.circular(60.0),
           )),
-      child: TaskList(searchController),
+      child: TaskList(searchController: searchController),
     );
   }
 }

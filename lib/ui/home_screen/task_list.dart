@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_list/Constants.dart';
 import 'package:todo_list/databasehelper/database_helper.dart';
+import 'package:todo_list/models/stream_helper.dart';
 import 'package:todo_list/models/task.dart';
 
 import '../add_task_screen/add_task_screen.dart';
@@ -12,14 +13,17 @@ import 'card_check_box.dart';
 class TaskList extends StatefulWidget {
   final TextEditingController searchController;
 
-  TaskList(this.searchController);
+  TaskList({this.searchController});
 
   @override
-  _TaskListState createState() => _TaskListState(searchController);
+  _TaskListState createState() {
+    return _TaskListState(searchController);
+  }
 }
 
 class _TaskListState extends State<TaskList> {
   TextEditingController searchController;
+
   Future<List<Task>> taskItems;
   Future<List<Task>> tempTaskItems;
   Future<List<Task>> searchTaskItems;
@@ -60,24 +64,27 @@ class _TaskListState extends State<TaskList> {
     tempTaskItems = taskItems;
     searchTaskItems = taskItems;
     initializeDateFormatting();
-
+    StreamHelper().getStreamListener((value) {
+      print('Button Pressed Value from controller: $value');
+      print('First subscription');
+    });
     super.initState();
   }
 
   _printLatestValue() async {
     if (searchController.text == '') {
       setState(() {
-        taskItems = tempTaskItems; //getTaskList();
+        taskItems = getTaskList();
       });
     } else {
       setState(() {
-        //taskItems = dbHelper.getSearchTask(searchController.text);
-        taskItems = processTaskItems(tempTaskItems, searchController.text);
+        taskItems = dbHelper.getSearchTask(searchController.text);
+        //taskItems = processTaskItems(tempTaskItems, searchController.text);
       });
     }
   }
 
-  Future<List<Task>> processTaskItems(
+  /*Future<List<Task>> processTaskItems(
       Future<List<Task>> taskItems, String searchText) async {
     List<Task> tempTask;
     for (Task task in await taskItems) {
@@ -87,7 +94,7 @@ class _TaskListState extends State<TaskList> {
       }
     }
     return tempTask as Future<List<Task>>;
-  }
+  }*/
 
   void search(String s) {
     dbHelper.getSearchTask(s);
@@ -175,7 +182,7 @@ class _TaskListState extends State<TaskList> {
             child: IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Navigator.pushNamed(context, Add_Task_Screen);
+                navigateToAddTask();
               },
               color: Colors.white,
             ),
@@ -215,9 +222,7 @@ class _TaskListState extends State<TaskList> {
             child: IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Navigator.pushNamed(context, Add_Task_Screen).then((value) {
-                  refreshList();
-                });
+                navigateToAddTask();
               },
               color: Colors.white,
             ),
@@ -422,6 +427,12 @@ class _TaskListState extends State<TaskList> {
   void refreshList() {
     setState(() {
       taskItems = getTaskList();
+    });
+  }
+
+  void navigateToAddTask() {
+    Navigator.pushNamed(context, Add_Task_Screen).then((value) {
+      refreshList();
     });
   }
 }
