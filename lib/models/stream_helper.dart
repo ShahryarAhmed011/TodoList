@@ -29,9 +29,8 @@ class StreamHelper {
     });
   }
 
-  void closeStreamController() {
+  void closeStreams() {
     streamSubscription.cancel();
     controller.close();
-    //controller.close();
   }
 }

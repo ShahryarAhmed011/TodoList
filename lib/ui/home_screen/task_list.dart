@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_list/Constants.dart';
@@ -33,6 +34,7 @@ class _TaskListState extends State<TaskList> {
   String dropHintValue;
   List<String> categoriesList;
   DBHelper dbHelper;
+  StreamHelper _streamHelper;
 
   _TaskListState(TextEditingController searchController) {
     this.searchController = searchController;
@@ -56,17 +58,16 @@ class _TaskListState extends State<TaskList> {
       'Wishlist',
       'Work',
     ];
-
     dbHelper = DBHelper();
+    _streamHelper = StreamHelper();
     taskDate = DateTime.now();
     searchController.addListener(_printLatestValue);
     taskItems = getTaskList();
     tempTaskItems = taskItems;
     searchTaskItems = taskItems;
     initializeDateFormatting();
-    StreamHelper().getStreamListener((value) {
-      print('Button Pressed Value from controller: $value');
-      print('First subscription');
+    _streamHelper.getStreamListener((value) {
+      navigateToAddTask();
     });
     super.initState();
   }
@@ -116,8 +117,11 @@ class _TaskListState extends State<TaskList> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
+        Container(
           height: 60,
+          width: MediaQuery.of(context).size.width / 1.3,
+          // color: Constants.randomColor(),
+          child: _scrollView(),
         ),
         Container(
           child: Expanded(
@@ -150,6 +154,40 @@ class _TaskListState extends State<TaskList> {
     );
   }
 
+  Widget _scrollView() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          tabContainer('All', 10),
+          SizedBox(
+            width: 10,
+          ),
+          tabContainer('Default', 0.0),
+          SizedBox(
+            width: 10,
+          ),
+          tabContainer('Personal', 0.0),
+          SizedBox(
+            width: 10,
+          ),
+          tabContainer('Shopping', 0.0),
+          SizedBox(
+            width: 10,
+          ),
+          tabContainer('Wishlist', 0.0),
+          SizedBox(
+            width: 10,
+          ),
+          tabContainer('Work', 0.0),
+        ],
+      ),
+    );
+  }
+
   Widget _showEmptyList() {
     return Center(
       child: Column(
@@ -178,22 +216,10 @@ class _TaskListState extends State<TaskList> {
               ),
             ],
           )),
-          Container(
-            child: IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                navigateToAddTask();
-              },
-              color: Colors.white,
-            ),
+
+          /*SizedBox(
             height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Constants.THEME_COLOR),
-          ),
-          SizedBox(
-            height: 40,
-          )
+          )*/
         ],
       ),
     );
@@ -216,22 +242,6 @@ class _TaskListState extends State<TaskList> {
             },
           ),
         ),
-        Expanded(
-          flex: 1,
-          child: Container(
-            child: IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                navigateToAddTask();
-              },
-              color: Colors.white,
-            ),
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Constants.THEME_COLOR),
-          ),
-        )
       ],
     );
   }
@@ -434,5 +444,30 @@ class _TaskListState extends State<TaskList> {
     Navigator.pushNamed(context, Add_Task_Screen).then((value) {
       refreshList();
     });
+  }
+
+  @override
+  void dispose() {
+    _streamHelper.closeStreams();
+    super.dispose();
+  }
+
+  Widget tabContainer(String text, double elevation) {
+    return Material(
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+      ),
+      child: Container(
+        color: Constants.THEME_COLOR,
+        padding: const EdgeInsets.all(10),
+        child: Text(text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+            )),
+      ),
+    );
   }
 }

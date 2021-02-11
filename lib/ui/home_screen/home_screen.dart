@@ -24,7 +24,9 @@ class HomeScreen extends StatelessWidget {
             Icons.menu,
           ),
           actions: <Widget>[
-            IconButton(
+            //CustomDialog().customDropDown(),
+
+            /*IconButton(
               alignment: Alignment.centerLeft,
               icon: Icon(
                 Icons.settings,
@@ -33,7 +35,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 // do something
               },
-            ),
+            ),*/
           ],
         ),
         body: Home(),

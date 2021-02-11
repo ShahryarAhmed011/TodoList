@@ -1,10 +1,8 @@
+import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/Constants.dart';
-import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:todo_list/databasehelper/database_helper.dart';
 import 'package:todo_list/models/task.dart';
-
-
 
 class CustomDialog {
   TextEditingController _titleController = new TextEditingController();
@@ -20,7 +18,7 @@ class CustomDialog {
     'Work',
   ];
 
-  void showFormDialog(BuildContext context,Function formDialogListener) {
+  void showFormDialog(BuildContext context, Function formDialogListener) {
     Size size = MediaQuery.of(context).size;
     showDialog(
         context: context,
@@ -30,16 +28,17 @@ class CustomDialog {
             backgroundColor: Colors.transparent,
             child: Center(
                 child: Container(
-                  width: size.width,
-                  height: size.height / 1.5,
-                  child: dialogForm(context,formDialogListener),
-                  color: Colors.white,
-                )),
+              width: size.width,
+              height: size.height / 1.5,
+              child: dialogForm(context, formDialogListener),
+              color: Colors.white,
+            )),
           );
         });
   }
-  Widget dialogForm(BuildContext context,Function formDialogListener){
-    return  Column(
+
+  Widget dialogForm(BuildContext context, Function formDialogListener) {
+    return Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,8 +48,7 @@ class CustomDialog {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(
@@ -65,8 +63,8 @@ class CustomDialog {
                                 color: Constants.THEME_COLOR,
                                 fontWeight: FontWeight.bold),
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Constants.THEME_COLOR),
+                              borderSide:
+                                  BorderSide(color: Constants.THEME_COLOR),
                             ),
                           ),
                         ),
@@ -79,8 +77,7 @@ class CustomDialog {
                   height: 10,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(
@@ -94,8 +91,8 @@ class CustomDialog {
                                 color: Constants.THEME_COLOR,
                                 fontWeight: FontWeight.bold),
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Constants.THEME_COLOR),
+                              borderSide:
+                                  BorderSide(color: Constants.THEME_COLOR),
                             ),
                           ),
                         ),
@@ -107,7 +104,7 @@ class CustomDialog {
                 SizedBox(
                   height: 10,
                 ),
-                _customDropDown(),
+                customDropDown(),
                 SizedBox(
                   height: 10,
                 ),
@@ -116,11 +113,13 @@ class CustomDialog {
             ),
           ),
           Expanded(
-            flex: 1,child: _formDialogButtons(context,formDialogListener),
+            flex: 1,
+            child: _formDialogButtons(context, formDialogListener),
           ),
         ]);
   }
-  Widget _customDropDown(){
+
+  Widget customDropDown() {
     return Column(
       children: [
         Container(
@@ -129,7 +128,12 @@ class CustomDialog {
             children: [
               Expanded(
                 flex: 1,
-                child: _dialogText('Select Category',null,FontWeight.bold,Constants.THEME_COLOR,),
+                child: _dialogText(
+                  'Select Category',
+                  null,
+                  FontWeight.bold,
+                  Constants.THEME_COLOR,
+                ),
               ),
               //IconButton(icon: Icon(Icons.mic,color: Constants.THEME_COLOR,), onPressed: (){}),
             ],
@@ -176,8 +180,7 @@ class CustomDialog {
               },
               items: categoriesList
                   .map((cityTitle) => DropdownMenuItem(
-                  value: cityTitle,
-                  child: Text("$cityTitle")))
+                      value: cityTitle, child: Text("$cityTitle")))
                   .toList(),
             ),
           ),
@@ -186,7 +189,7 @@ class CustomDialog {
     );
   }
 
-  Widget _datePicker(){
+  Widget _datePicker() {
     return Column(
       children: [
         Container(
@@ -207,28 +210,26 @@ class CustomDialog {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: 10, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Row(
             children: [
               Expanded(
                   child: CalendarTimeline(
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(DateTime.now().year, 11, 31),
-                    onDateSelected: (date) {
-                      taskDate = date;
-                    },
-                    leftMargin: 20,
-                    monthColor: Colors.blueGrey,
-                    dayColor: Constants.THEME_COLOR,
-                    activeDayColor: Colors.white,
-                    activeBackgroundDayColor: Constants.THEME_COLOR,
-                    dotsColor: Color(0xFF333A47),
-                    selectableDayPredicate: (date) =>
-                    date.day != 23,
-                    locale: 'en_ISO',
-                  )),
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: DateTime(DateTime.now().year, 11, 31),
+                onDateSelected: (date) {
+                  taskDate = date;
+                },
+                leftMargin: 20,
+                monthColor: Colors.blueGrey,
+                dayColor: Constants.THEME_COLOR,
+                activeDayColor: Colors.white,
+                activeBackgroundDayColor: Constants.THEME_COLOR,
+                dotsColor: Color(0xFF333A47),
+                selectableDayPredicate: (date) => date.day != 23,
+                locale: 'en_ISO',
+              )),
               //IconButton(icon: Icon(Icons.mic,color: Constants.THEME_COLOR,), onPressed: (){}),
             ],
           ),
@@ -236,11 +237,11 @@ class CustomDialog {
       ],
     );
   }
-  Widget _formDialogButtons(BuildContext context,Function formDialogListener){
+
+  Widget _formDialogButtons(BuildContext context, Function formDialogListener) {
     return Center(
       child: Container(
-        padding:
-        EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           // this will take space as minimum as posible(to center)
@@ -273,7 +274,6 @@ class CustomDialog {
                     DBHelper().submit(task);
                     formDialogListener.call();
 
-
                     /* setState(() {
                                         list getTaskList();
                                       });*/
@@ -292,27 +292,28 @@ class CustomDialog {
     );
   }
 
-
-  void showDeleteDialog(BuildContext context,Task task,Function deleteDialogListener) {
+  void showDeleteDialog(
+      BuildContext context, Task task, Function deleteDialogListener) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: _dialogText('Alert',null, null,null),
-          content: _dialogText('Are you sure you want to delete this task?',null,null,null),
+          title: _dialogText('Alert', null, null, null),
+          content: _dialogText(
+              'Are you sure you want to delete this task?', null, null, null),
           actions: <Widget>[
             //  buttons at the bottom of the dialog
             ElevatedButton(
-              child: _dialogText('Close',null,null,null),
+              child: _dialogText('Close', null, null, null),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
 
             ElevatedButton(
-              child: _dialogText("Delete",null,null,null),
+              child: _dialogText("Delete", null, null, null),
               onPressed: () async {
                 DBHelper().deleteItem(task.id);
                 deleteDialogListener.call();
@@ -325,18 +326,12 @@ class CustomDialog {
     );
   }
 
-  Widget _dialogText(String text,double fontSize, FontWeight fontWeight,Color textColor){
+  Widget _dialogText(
+      String text, double fontSize, FontWeight fontWeight, Color textColor) {
     return Text(
       text,
       style: TextStyle(
-          color: textColor,
-          fontSize: fontSize,
-          fontWeight: fontWeight),
+          color: textColor, fontSize: fontSize, fontWeight: fontWeight),
     );
   }
-
 }
-
-
-
-
