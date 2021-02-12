@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 class StreamHelper {
-  StreamController<double> controller;
+  StreamController<dynamic> controller;
   Stream stream;
   StreamSubscription streamSubscription;
 
   StreamHelper._privateConstructor() {
-    controller = StreamController<double>();
+    controller = StreamController<dynamic>();
     stream = controller.stream;
     //streamSubscription = stream.;
   }
@@ -19,11 +19,11 @@ class StreamHelper {
     return _instance;
   }
 
-  StreamController<double> getStreamController() {
+  StreamController<dynamic> getStreamController() {
     return controller;
   }
 
-  void getStreamListener(ValueSetter<double> streamListen) {
+  void getStreamListener(ValueSetter<dynamic> streamListen) {
     streamSubscription = stream.listen((value) {
       streamListen.call(value);
     });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/Constants.dart';
 import 'package:todo_list/models/stream_helper.dart';
+import 'package:todo_list/ui/home_screen/custom_app_bar.dart';
 import 'package:todo_list/ui/home_screen/search_field.dart';
 
 import 'digital_clock.dart';
@@ -15,29 +16,6 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text('.'),
-          elevation: 0,
-          backgroundColor: Constants.THEME_COLOR,
-          centerTitle: true,
-          leading: Icon(
-            Icons.menu,
-          ),
-          actions: <Widget>[
-            //CustomDialog().customDropDown(),
-
-            /*IconButton(
-              alignment: Alignment.centerLeft,
-              icon: Icon(
-                Icons.settings,
-                color: Constants.THEME_TEXT_COLOR,
-              ),
-              onPressed: () {
-                // do something
-              },
-            ),*/
-          ],
-        ),
         body: Home(),
         backgroundColor: Constants.THEME_COLOR,
         floatingActionButton: FloatingActionButton(
@@ -53,6 +31,54 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  void oldAppBar() {
+    AppBar(
+      //title: Text('.'),
+      elevation: 0,
+      backgroundColor: Constants.THEME_COLOR,
+      centerTitle: true,
+      leading: Icon(
+        Icons.menu,
+      ),
+      actions: <Widget>[
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: Constants.randomColor(),
+                child: Text("Main"),
+              ),
+            )
+
+            /*IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(
+                    Icons.settings,
+                    color: Constants.THEME_TEXT_COLOR,
+                  ),
+                )*/
+          ],
+        ),
+        /* _testMenuButton(),*/
+
+        //CustomDialog().customDropDown(),
+
+        /*IconButton(
+              alignment: Alignment.centerLeft,
+              icon: Icon(
+                Icons.settings,
+                color: Constants.THEME_TEXT_COLOR,
+              ),
+              onPressed: () {
+                // do something
+              },
+            ),*/
+      ],
+    );
+  }
 }
 
 class Home extends StatelessWidget {
@@ -65,6 +91,7 @@ class Home extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        CustomAppBar(),
         Expanded(
             flex: 2,
             child: Container(

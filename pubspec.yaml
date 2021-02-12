@@ -38,6 +38,8 @@ dependencies:
   flutter_simple_dependency_injection: ^1.0.1
   calendar_timeline: ^0.7.0
   flutter_dropdown: ^0.0.8
+  menu_button: ^1.2.1
+  date_time_picker: ^1.1.1
 
 
 dev_dependencies:

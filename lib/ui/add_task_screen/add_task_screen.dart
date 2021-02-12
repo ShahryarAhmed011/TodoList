@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/Constants.dart';
 import 'package:todo_list/databasehelper/database_helper.dart';
 import 'package:todo_list/models/task.dart';
-
-import 'custom_date_picker.dart';
+import 'package:todo_list/ui/add_task_screen/custom_date_picker.dart';
 
 const String Add_Task_Screen = 'Add_Task_Screen';
 
@@ -115,8 +114,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 SizedBox(
                   height: 10,
                 ),
-                CustomDatePicker((selectedDate) {
+
+                /*CustomDatePicker((selectedDate) {
                   _taskDate = selectedDate;
+                }
+                ),*/
+
+                CustomDateTimePicker((selectedDate) {
+                  print('Task Date Time-->$selectedDate');
+                  _taskDate = DateTime.parse(selectedDate);
                 }),
               ],
             ),
@@ -214,13 +220,6 @@ class CustomDropDownMenu extends StatelessWidget {
   final ValueSetter<String> selectedItem;
   final String _dropDownValue = 'Default';
   final String _dropHintValue = 'Default';
-  final List<String> _categoriesList = [
-    'Default',
-    'Personal',
-    'Shopping',
-    'Wishlist',
-    'Work',
-  ];
 
   CustomDropDownMenu({this.selectedItem});
 
@@ -281,7 +280,7 @@ class CustomDropDownMenu extends StatelessWidget {
               onChanged: (String value) {
                 selectedItem.call(value);
               },
-              items: _categoriesList
+              items: Constants.categoriesList
                   .map((cityTitle) => DropdownMenuItem(
                       value: cityTitle, child: Text("$cityTitle")))
                   .toList(),
@@ -292,3 +291,38 @@ class CustomDropDownMenu extends StatelessWidget {
     );
   }
 }
+
+/*class CustomDateTimePicker extends StatelessWidget {
+  final ValueSetter selectedDateTime;
+
+  CustomDateTimePicker(this.selectedDateTime);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 20, top: 10),
+      child: DateTimePicker(
+        type: DateTimePickerType.dateTime,
+        dateMask: Constants.DATE_TIME_FORMATE,
+        initialValue: DateTime.now().toString(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year, 11, 31),
+        dateLabelText: 'Date',
+        timeLabelText: "Hour",
+        */ /*selectableDayPredicate: (date) {
+          // Disable weekend days to select from the calendar
+          if (date.weekday == 6 || date.weekday == 7) {
+            return false;
+          }
+          return true;
+        },*/ /*
+        onChanged: (val) => selectedDateTime.call(val),
+        validator: (val) {
+          print(val);
+          return null;
+        },
+        onSaved: (val) => print(val),
+      ),
+    );
+  }
+}*/

@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io' as io;
+
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:todo_list/models/task.dart';
 
-class DBHelper{
-
+class DBHelper {
   static final _dbName = 'todolist.db';
   static final _dbVersion = 1;
   static final _TABLE_NAME = 'task';
@@ -20,8 +20,7 @@ class DBHelper{
   static final TASK_COMPLETE = 'is_complete';
   static Database _db;
   Future<Database> get db async {
-    if(_db != null)
-      return _db;
+    if (_db != null) return _db;
     _db = await initDb();
     return _db;
   }
@@ -30,7 +29,8 @@ class DBHelper{
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _dbName);
-    var theDb = await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+    var theDb =
+        await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
     return theDb;
   }
 
@@ -45,53 +45,108 @@ class DBHelper{
   // Retrieving employees from Employee Tables
   Future<List<Task>> getTask() async {
     var dbClient = await db;
-    List<Map>  list = await dbClient.rawQuery('SELECT * FROM $_TABLE_NAME');
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $_TABLE_NAME');
     List<Task> taskList = new List();
     for (int i = 0; i < list.length; i++) {
       //print('List In DB Helper--->${list[i]["$TASK_COMPLETE"]}');
-     // print('List In DB Helper stringToBool--->${stringToBool(list[i][" $TASK_COMPLETE"])}');
-    //  print('List In DB Helper stringToBool--->${toBoolean(list[i]["$TASK_COMPLETE"])}');
-      taskList.add(new Task(list[i]["$TASK_ID"], list[i]["$TASK_TITLE"], list[i]["$TASK_DESCRIPTION"], DateTime.parse(list[i]["$TASK_DATE"]), toBoolean(list[i]["$TASK_STATUS"]) ,list[i]["$TASK_CATEGORY"], toBoolean(list[i]["$TASK_COMPLETE"])));/*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*///stringToBool(list[i][" $TASK_COMPLETE"])));
+      // print('List In DB Helper stringToBool--->${stringToBool(list[i][" $TASK_COMPLETE"])}');
+      //  print('List In DB Helper stringToBool--->${toBoolean(list[i]["$TASK_COMPLETE"])}');
+      taskList.add(new Task(
+          list[i]["$TASK_ID"],
+          list[i]["$TASK_TITLE"],
+          list[i]["$TASK_DESCRIPTION"],
+          DateTime.parse(list[i]["$TASK_DATE"]),
+          toBoolean(list[i]["$TASK_STATUS"]),
+          list[i]["$TASK_CATEGORY"],
+          toBoolean(list[i][
+              "$TASK_COMPLETE"]))); /*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*/ //stringToBool(list[i][" $TASK_COMPLETE"])));
+    }
+    print(taskList.length);
+    return taskList;
+  }
+
+  // Retrieving employees from Employee Tables
+  Future<List<Task>> getTaskByCategory(String category) async {
+    var dbClient = await db;
+    /*   List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $_TABLE_NAME WHERE $TASK_CATEGORY = $');*/
+    List<Map> list = await dbClient.rawQuery('''
+    SELECT * FROM $_TABLE_NAME 
+    WHERE $TASK_CATEGORY = ?
+    ''', [category]);
+
+    List<Task> taskList = new List();
+    for (int i = 0; i < list.length; i++) {
+      taskList.add(new Task(
+          list[i]["$TASK_ID"],
+          list[i]["$TASK_TITLE"],
+          list[i]["$TASK_DESCRIPTION"],
+          DateTime.parse(list[i]["$TASK_DATE"]),
+          toBoolean(list[i]["$TASK_STATUS"]),
+          list[i]["$TASK_CATEGORY"],
+          toBoolean(list[i][
+              "$TASK_COMPLETE"]))); /*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*/ //stringToBool(list[i][" $TASK_COMPLETE"])));
     }
     print(taskList.length);
     return taskList;
   }
 
   Future<List<Task>> getSearchTask(String s) async {
-    var dbClient = await db;// await dbClient.rawQuery('SELECT * FROM task WHERE name LIKE ', [s]);
-    List<Map>  list =  await dbClient.rawQuery('SELECT * FROM $_TABLE_NAME');
+    var dbClient =
+        await db; // await dbClient.rawQuery('SELECT * FROM task WHERE name LIKE ', [s]);
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $_TABLE_NAME');
     List<Task> taskList = new List();
     List<Task> filteredList = new List();
 
     for (int i = 0; i < list.length; i++) {
-    //  print('Search List In DB Helper--->${list[i]["$TASK_TITLE"]}');
+      //  print('Search List In DB Helper--->${list[i]["$TASK_TITLE"]}');
       // print('List In DB Helper stringToBool--->${stringToBool(list[i][" $TASK_COMPLETE"])}');
       //  print('List In DB Helper stringToBool--->${toBoolean(list[i]["$TASK_COMPLETE"])}');
-      if(list[i]["$TASK_TITLE"].toString().toLowerCase().contains(s.toLowerCase())){
-        filteredList.add(new Task(list[i]["$TASK_ID"], list[i]["$TASK_TITLE"], list[i]["$TASK_DESCRIPTION"], DateTime.parse(list[i]["$TASK_DATE"]), toBoolean(list[i]["$TASK_STATUS"]) ,list[i]["$TASK_CATEGORY"], toBoolean(list[i]["$TASK_COMPLETE"])));/*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*///stringToBool(list[i][" $TASK_COMPLETE"])));
+      if (list[i]["$TASK_TITLE"]
+          .toString()
+          .toLowerCase()
+          .contains(s.toLowerCase())) {
+        filteredList.add(new Task(
+            list[i]["$TASK_ID"],
+            list[i]["$TASK_TITLE"],
+            list[i]["$TASK_DESCRIPTION"],
+            DateTime.parse(list[i]["$TASK_DATE"]),
+            toBoolean(list[i]["$TASK_STATUS"]),
+            list[i]["$TASK_CATEGORY"],
+            toBoolean(list[i][
+                "$TASK_COMPLETE"]))); /*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*/ //stringToBool(list[i][" $TASK_COMPLETE"])));
       }
-     }
+    }
     print(filteredList.length);
     return filteredList;
   }
 
   Future<Task> getSingleRecord(int id) async {
     var dbClient = await db;
-    List<Map>  list = await dbClient.rawQuery('SELECT * FROM $_TABLE_NAME WHERE $TASK_ID = $id');
+    List<Map> list = await dbClient
+        .rawQuery('SELECT * FROM $_TABLE_NAME WHERE $TASK_ID = $id');
     Task task;
     for (int i = 0; i < list.length; i++) {
-    task = new Task(list[i]["$TASK_ID"], list[i]["$TASK_TITLE"], list[i]["$TASK_DESCRIPTION"], DateTime.parse(list[i]["$TASK_DATE"]), toBoolean(list[i]["$TASK_STATUS"]) ,list[i]["$TASK_CATEGORY"], toBoolean(list[i]["$TASK_COMPLETE"]));/*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*///stringToBool(list[i][" $TASK_COMPLETE"])));
-  }
+      task = new Task(
+          list[i]["$TASK_ID"],
+          list[i]["$TASK_TITLE"],
+          list[i]["$TASK_DESCRIPTION"],
+          DateTime.parse(list[i]["$TASK_DATE"]),
+          toBoolean(list[i]["$TASK_STATUS"]),
+          list[i]["$TASK_CATEGORY"],
+          toBoolean(list[i][
+              "$TASK_COMPLETE"])); /*stringToBool(list[i]["$TASK_STATUS"]), list[i]["$TASK_CATEGORY"]*/ //stringToBool(list[i][" $TASK_COMPLETE"])));
+    }
     return task;
   }
 
-  bool toBoolean(String boolString){
-   // print(boolString);
-    if(boolString.toString() == "true"){
-     // print('Identical is true');
+  bool toBoolean(String boolString) {
+    // print(boolString);
+    if (boolString.toString() == "true") {
+      // print('Identical is true');
       return true;
-    }else{
-     // print('Identical is false $boolString == ${"true"}');
+    } else {
+      // print('Identical is false $boolString == ${"true"}');
       return false;
     }
   }
@@ -128,15 +183,12 @@ class DBHelper{
     });
   }
 
-
-
   Future<int> getRowCount() async {
     var dbClient = await db;
-    int count = Sqflite.firstIntValue(await dbClient.rawQuery('SELECT COUNT(*) FROM $_TABLE_NAME'));
+    int count = Sqflite.firstIntValue(
+        await dbClient.rawQuery('SELECT COUNT(*) FROM $_TABLE_NAME'));
     return count;
   }
-
-
 
   deleteAll() async {
     var dbClient = await db;
@@ -145,7 +197,8 @@ class DBHelper{
 
   deleteItem(int id) async {
     var dbClient = await db;
-    return await dbClient.rawDelete("Delete from $_TABLE_NAME WHERE $TASK_ID = $id");
+    return await dbClient
+        .rawDelete("Delete from $_TABLE_NAME WHERE $TASK_ID = $id");
   }
 
   getDBRowCount() async {
@@ -158,44 +211,45 @@ class DBHelper{
     return task;
   }
 
+  Future<List<Task>> fetchTaskByCategory(String category) async {
+    var dbHelper = DBHelper();
+    Future<List<Task>> task = dbHelper.getTaskByCategory(category);
+    return task;
+  }
 
-  void getTaskList() async{
+  void getTaskList() async {
     List<Task> emp = await fetchTaskList();
     print('Date From DB---->>${emp.elementAt(0).date}');
   }
 
   void submit(Task task) {
- /*   var json = jsonEncode(task);
+    /*   var json = jsonEncode(task);
     print('Date From Task---->>${task.date}');*/
     var dbHelper = DBHelper();
     dbHelper.saveTask(task);
-
   }
 
-  void deleteAllTask() async{
+  void deleteAllTask() async {
     await DBHelper().deleteAll();
   }
 
-  void updateTask(int id,bool isTaskComplete) async{
+  void updateTask(int id, bool isTaskComplete) async {
     var dbClient = await db;
     await dbClient.rawUpdate('''
     UPDATE $_TABLE_NAME 
     SET $TASK_COMPLETE = ? 
     WHERE $TASK_ID = ?
-    ''',
-        [boolToString(isTaskComplete), id]);  }
+    ''', [boolToString(isTaskComplete), id]);
+  }
 
-  String boolToString(bool boolValue){
-    if(boolValue == true){
+  String boolToString(bool boolValue) {
+    if (boolValue == true) {
       return 'true';
-    }else{
+    } else {
       return 'false';
     }
   }
-
-
 }
-
 
 /*
 import 'dart:io';

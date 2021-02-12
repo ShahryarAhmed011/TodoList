@@ -67,7 +67,18 @@ class _TaskListState extends State<TaskList> {
     searchTaskItems = taskItems;
     initializeDateFormatting();
     _streamHelper.getStreamListener((value) {
-      navigateToAddTask();
+      if (value == 1) {
+        navigateToAddTask();
+      } else if (value == 'All') {
+        print('--Value From Stream--->$value');
+        setState(() {
+          taskItems = getTaskList();
+        });
+      } else {
+        setState(() {
+          taskItems = getTaskByCategory(value);
+        });
+      }
     });
     super.initState();
   }
@@ -110,6 +121,15 @@ class _TaskListState extends State<TaskList> {
     }
   }
 
+  Future<List<Task>> getTaskByCategory(String category) async {
+    if (await dbHelper.getRowCount() > 0) {
+      return await dbHelper.fetchTaskByCategory(category);
+    } else {
+      List<Task> taskList = List();
+      return taskList;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,8 +140,7 @@ class _TaskListState extends State<TaskList> {
         Container(
           height: 60,
           width: MediaQuery.of(context).size.width / 1.3,
-          // color: Constants.randomColor(),
-          child: _scrollView(),
+          //child: Expanded(child: _testMenuButton()),
         ),
         Container(
           child: Expanded(
@@ -390,7 +409,8 @@ class _TaskListState extends State<TaskList> {
               overflow: TextOverflow.fade,
               maxLines: 1,
               text: TextSpan(
-                text: DateFormat("EEEE, d, hh:mm:ss:a")
+                text: DateFormat(
+                        Constants.DATE_TIME_FORMATE) //"EEEE, d, hh:mm:ss:a"
                     .format(item.date)
                     .toString(),
                 style: TextStyle(

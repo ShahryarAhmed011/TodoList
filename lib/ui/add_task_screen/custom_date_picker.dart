@@ -1,9 +1,44 @@
-import 'package:calendar_timeline/calendar_timeline.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../Constants.dart';
 
-class CustomDatePicker extends StatelessWidget {
+class CustomDateTimePicker extends StatelessWidget {
+  final ValueSetter _selectedDateTime;
+
+  CustomDateTimePicker(this._selectedDateTime);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 20, top: 10, right: 20),
+      child: DateTimePicker(
+        type: DateTimePickerType.dateTime,
+        dateMask: Constants.DATE_TIME_FORMATE,
+        initialValue: DateTime.now().toString(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year, 11, 31),
+        dateLabelText: 'Date',
+        timeLabelText: "Hour",
+        /*selectableDayPredicate: (date) {
+          // Disable weekend days to select from the calendar
+          if (date.weekday == 6 || date.weekday == 7) {
+            return false;
+          }
+          return true;
+        },*/
+        onChanged: (val) => _selectedDateTime.call(val),
+        validator: (val) {
+          print(val);
+          return null;
+        },
+        onSaved: (val) => print(val),
+      ),
+    );
+  }
+}
+
+/*class CustomDatePicker extends StatelessWidget {
   //Callback types
   //final VoidCallback myVoidCallback = () {};
   //final ValueGetter<int> myValueGetter = () => 42;
@@ -65,4 +100,4 @@ class CustomDatePicker extends StatelessWidget {
       ],
     );
   }
-}
+}*/
